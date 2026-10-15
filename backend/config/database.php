@@ -24,7 +24,7 @@ $dsn = "pgsql:host={$host};port={$port};dbname={$dbname};sslmode={$sslmode};opti
 
         try {
             self::$instance = new PDO($dsn, $user, $pass, [
-                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,C:\xampp\php\php.exe -S localhost:8000
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
                 PDO::ATTR_EMULATE_PREPARES => true,
             ]);

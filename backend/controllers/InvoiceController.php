@@ -38,12 +38,12 @@ class InvoiceController
         $invoiceNumber = 'INV-' . date('Ymd') . '-' . str_pad((string) random_int(1, 9999), 4, '0', STR_PAD_LEFT);
 
         $stmt = $db->prepare(
-            "INSERT INTO invoices (invoice_number, source_type, job_id, customer_id, subtotal, discount, total, status)
-             VALUES (:num, 'job', :jid, :cid, :subtotal, :discount, :total, 'Unpaid') RETURNING id"
+            "INSERT INTO invoices (invoice_number, source_type, job_id, customer_id, labour_charge, subtotal, discount, total, status)
+             VALUES (:num, 'job', :jid, :cid, :labour, :subtotal, :discount, :total, 'Unpaid') RETURNING id"
         );
         $stmt->execute([
             ':num' => $invoiceNumber, ':jid' => $jobId, ':cid' => $jobRow['customer_id'],
-            ':subtotal' => $subtotal, ':discount' => $discount, ':total' => $total,
+            ':labour' => $labourCharge, ':subtotal' => $subtotal, ':discount' => $discount, ':total' => $total,
         ]);
         $id = $stmt->fetch()['id'];
 

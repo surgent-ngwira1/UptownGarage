@@ -274,9 +274,9 @@ class JobController
 
         $db = Database::connect();
         $stmt = $db->prepare(
-            'INSERT INTO job_approvals (job_id, description, estimated_cost) VALUES (:jid, :desc, :cost) RETURNING id'
+            'INSERT INTO job_approvals (job_id, description, estimated_cost, requested_by) VALUES (:jid, :desc, :cost, :by) RETURNING id'
         );
-        $stmt->execute([':jid' => $jobId, ':desc' => $description, ':cost' => $cost]);
+        $stmt->execute([':jid' => $jobId, ':desc' => $description, ':cost' => $cost, ':by' => $payload['id']]);
         $id = $stmt->fetch()['id'];
 
         $upd = $db->prepare("UPDATE job_cards SET status = 'Awaiting Approval' WHERE id = :id");
@@ -308,8 +308,8 @@ class JobController
             Response::error('This approval request does not belong to you.', 403);
         }
 
-        $upd = $db->prepare('UPDATE job_approvals SET status = :status, decided_at = NOW() WHERE id = :id');
-        $upd->execute([':status' => $decision, ':id' => $approvalId]);
+        $upd = $db->prepare('UPDATE job_approvals SET status = :status, decided_by = :by, decided_at = NOW() WHERE id = :id');
+        $upd->execute([':status' => $decision, ':by' => $payload['id'], ':id' => $approvalId]);
 
         $newJobStatus = $decision === 'Approved' ? 'Approved' : 'In Progress';
         $updJob = $db->prepare('UPDATE job_cards SET status = :status WHERE id = :id');
